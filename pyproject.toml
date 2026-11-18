@@ -27,3 +27,6 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "FURB"]
+
+[tool.setuptools]
+packages = ["fdf"]
