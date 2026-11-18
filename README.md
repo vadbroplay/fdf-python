@@ -120,4 +120,4 @@ GitHub Actions запускает тесты, проверку стиля и с�
 - Tkinter
 - pytest
 - Ruff
-  - mypy
+- mypy
