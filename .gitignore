@@ -1,0 +1,24 @@
+# Виртуальные окружения
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Кэш проверок
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# PyCharm
+.idea/
+
+# Сборка
+build/
+dist/
+
+# Системные файлы Windows
+Thumbs.db
+Desktop.ini
