@@ -24,7 +24,7 @@
 Клонируйте репозиторий и перейдите в каталог проекта:
 
 ```bash
-git clone <URL_ВАШЕГО_РЕПОЗИТОРИЯ>
+git clone https://github.com/vadbroplay/fdf-python
 cd fdf-python
 ```
 
