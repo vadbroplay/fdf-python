@@ -6,7 +6,6 @@ from fdf.projection import Camera
 
 
 class FdfApp:
-    """Графическое приложение для просмотра карты высот."""
 
     def __init__(self, height_map: Map) -> None:
         self.height_map = height_map
@@ -53,12 +52,10 @@ class FdfApp:
         self.root.after(100, self.draw)
 
     def run(self) -> None:
-        """Запускает главный цикл приложения."""
         self.root.mainloop()
 
 
     def _on_mouse_wheel(self, event: tk.Event[tk.Misc]) -> None:
-        """Масштабирует карту относительно положения курсора."""
         if event.delta > 0:
             factor = 1.1
         else:
@@ -76,7 +73,6 @@ class FdfApp:
             cursor_x: float | None = None,
             cursor_y: float | None = None,
     ) -> None:
-        """Меняет масштаб относительно положения курсора."""
         new_zoom = max(0.1, min(value, 10.0))
 
         if new_zoom == self.zoom:
@@ -95,7 +91,6 @@ class FdfApp:
 
         factor = new_zoom / self.zoom
 
-        # Компенсируем смещение, чтобы выбранная точка оставалась на месте.
         self.pan_x = (
                              self.pan_x + center_x - cursor_x
                      ) * factor - center_x + cursor_x
@@ -108,12 +103,10 @@ class FdfApp:
         self.draw()
 
     def _on_drag_start(self, event: tk.Event[tk.Misc]) -> None:
-        """Запоминает начальную позицию перетаскивания."""
         self._drag_start_x = event.x
         self._drag_start_y = event.y
 
     def _on_drag_motion(self, event: tk.Event[tk.Misc]) -> None:
-        """Перемещает карту вслед за мышью."""
         self.pan_x += event.x - self._drag_start_x
         self.pan_y += event.y - self._drag_start_y
 
@@ -122,7 +115,6 @@ class FdfApp:
         self.draw()
 
     def _move(self, dx: float, dy: float) -> None:
-        """Сдвигает карту на заданное количество пикселей."""
         self.pan_x += dx
         self.pan_y += dy
         self.draw()
@@ -140,32 +132,26 @@ class FdfApp:
         self._move(0, 20)
 
     def _on_height_up(self, _event: tk.Event[tk.Misc]) -> None:
-        """Увеличивает вертикальный масштаб рельефа."""
         self.z_scale = min(self.z_scale + 0.2, 10.0)
         self.draw()
 
     def _on_height_down(self, _event: tk.Event[tk.Misc]) -> None:
-        """Уменьшает вертикальный масштаб рельефа."""
         self.z_scale = max(self.z_scale - 0.2, 0.0)
         self.draw()
 
     def _on_toggle_view(self, _event: tk.Event[tk.Misc]) -> None:
-        """Переключает изометрию и вид сверху."""
         self.top_view = not self.top_view
         self.draw()
 
     def _on_rotate_left(self, _event: tk.Event[tk.Misc]) -> None:
-        """Поворачивает карту против часовой стрелки."""
         self.angle_degrees = (self.angle_degrees - 10) % 360
         self.draw()
 
     def _on_rotate_right(self, _event: tk.Event[tk.Misc]) -> None:
-        """Поворачивает карту по часовой стрелке."""
         self.angle_degrees = (self.angle_degrees + 10) % 360
         self.draw()
 
     def _on_letter_key(self, event: tk.Event[tk.Misc]) -> None:
-        """Обрабатывает клавиши независимо от раскладки Windows."""
         if event.keycode == 65:  # A
             self._on_rotate_left(event)
         elif event.keycode == 68:  # D
@@ -174,18 +160,15 @@ class FdfApp:
             self._on_toggle_view(event)
 
     def _on_resize(self, event: tk.Event[tk.Misc]) -> None:
-        """Перерисовывает карту при изменении размера окна."""
         if event.widget is self.root and not self._draw_pending:
             self._draw_pending = True
             self.root.after_idle(self._redraw_after_resize)
 
     def _redraw_after_resize(self) -> None:
-        """Выполняет отложенную перерисовку."""
         self._draw_pending = False
         self.draw()
 
     def _color_for_height(self, z: float) -> str:
-        """Возвращает цвет точки в зависимости от высоты."""
         heights = [point.z for point in self.height_map]
         min_z = min(heights)
         max_z = max(heights)
@@ -204,7 +187,6 @@ class FdfApp:
         return "#FF3333"
 
     def draw(self) -> None:
-        """Рисует каркас карты высот."""
         self.canvas.delete("all")
 
         width = self.canvas.winfo_width()
@@ -287,7 +269,6 @@ class FdfApp:
         y2: float,
         color: str | None,
     ) -> None:
-        """Рисует одно ребро каркасной модели."""
         self.canvas.create_line(
             x1,
             y1,
