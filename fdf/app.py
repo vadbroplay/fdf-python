@@ -4,6 +4,7 @@ import tkinter as tk
 from fdf.model import Map, Point
 from fdf.projection import Camera
 
+
 class FdfApp:
     def __init__(self, height_map: Map) -> None:
         self.height_map = height_map
