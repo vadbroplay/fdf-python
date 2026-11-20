@@ -16,16 +16,27 @@ class Camera:
     scale: float
     offset_x: float
     offset_y: float
+    rotation: float = 0.0
 
     def project(self, point: Point) -> ScreenPoint:
-        iso_angle = math.radians(30)
+        angle = math.radians(30)
+        rotation_angle = math.radians(self.rotation)
+
+        rotated_x = (
+            point.x * math.cos(rotation_angle)
+            - point.y * math.sin(rotation_angle)
+        )
+        rotated_y = (
+            point.x * math.sin(rotation_angle)
+            + point.y * math.cos(rotation_angle)
+        )
 
         projected_x = (
-            point.x - point.y
-        ) * math.cos(iso_angle)
+            rotated_x - rotated_y
+        ) * math.cos(angle)
 
         projected_y = (
-            (point.x + point.y) * math.sin(iso_angle)
+            (rotated_x + rotated_y) * math.sin(angle)
             - point.z
         )
 
@@ -40,6 +51,7 @@ class Camera:
         height_map: Map,
         width: int,
         height: int,
+        rotation: float = 0.0,
     ) -> "Camera":
         points = list(height_map)
 
@@ -47,6 +59,7 @@ class Camera:
             scale=1.0,
             offset_x=0.0,
             offset_y=0.0,
+            rotation=rotation,
         )
 
         projected = [
@@ -80,4 +93,5 @@ class Camera:
             scale=scale,
             offset_x=offset_x,
             offset_y=offset_y,
+            rotation=rotation,
         )

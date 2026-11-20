@@ -13,6 +13,8 @@ class FdfApp:
         self.root.geometry("1000x700")
         self.root.minsize(500, 400)
 
+        self.rotation = 0.0
+
         self.canvas = tk.Canvas(
             self.root,
             background="#20242B",
@@ -24,11 +26,22 @@ class FdfApp:
 
         self.root.bind("<Escape>", lambda _event: self.root.destroy())
         self.root.bind("<Configure>", self._on_resize)
+        self.root.bind("<KeyPress>", self._on_key_press)
 
         self.root.after(100, self.draw)
 
     def run(self) -> None:
         self.root.mainloop()
+
+    def _on_key_press(self, event: tk.Event[tk.Misc]) -> None:
+        if event.keycode == 65:
+            self.rotation -= 10.0
+        elif event.keycode == 68:
+            self.rotation += 10.0
+        else:
+            return
+
+        self.draw()
 
     def _on_resize(self, event: tk.Event[tk.Misc]) -> None:
         if event.widget is self.root and not self._draw_pending:
@@ -48,7 +61,12 @@ class FdfApp:
         if width <= 1 or height <= 1:
             return
 
-        camera = Camera.fit(self.height_map, width, height)
+        camera = Camera.fit(
+            self.height_map,
+            width,
+            height,
+            rotation=self.rotation,
+        )
 
         for point in self.height_map:
             start = camera.project(point)
@@ -71,6 +89,20 @@ class FdfApp:
                 fill="#E8EDF2",
                 outline="",
             )
+
+        self._draw_hud()
+
+    def _draw_hud(self) -> None:
+        self.canvas.create_text(
+            15,
+            self.canvas.winfo_height() - 16,
+            anchor=tk.SW,
+            text=(
+                "A/D: поворот"
+            ),
+            fill="#B8C0CC",
+            font=("Segoe UI", 11),
+        )
 
     def _draw_edge(
         self,
