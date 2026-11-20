@@ -13,6 +13,8 @@ class FdfApp:
         self.root.geometry("1000x700")
         self.root.minsize(500, 400)
 
+        self.top_view = False
+
         self.canvas = tk.Canvas(
             self.root,
             background="#20242B",
@@ -28,11 +30,19 @@ class FdfApp:
 
         self.root.bind("<Escape>", lambda _event: self.root.destroy())
         self.root.bind("<Configure>", self._on_resize)
+        self.root.bind("<KeyPress>", self._on_key_press)
 
         self.root.after(100, self.draw)
 
+    def _on_key_press(self, event: tk.Event[tk.Misc]) -> None:
+        if event.keycode == 86:
+            self._toggle_view(event)
     def run(self) -> None:
         self.root.mainloop()
+
+    def _toggle_view(self, _event: tk.Event[tk.Misc]) -> None:
+        self.top_view = not self.top_view
+        self.draw()
 
     def _on_resize(self, event: tk.Event[tk.Misc]) -> None:
         if event.widget is self.root and not self._draw_pending:
@@ -74,7 +84,12 @@ class FdfApp:
         if width <= 1 or height <= 1:
             return
 
-        camera = Camera.fit(self.height_map, width, height)
+        camera = Camera.fit(
+            self.height_map,
+            width,
+            height,
+            top_view=self.top_view,
+        )
 
         for point in self.height_map:
             start = camera.project(point)
@@ -114,6 +129,17 @@ class FdfApp:
                 outline="",
             )
 
+        self._draw_hud()
+
+    def _draw_hud(self) -> None:
+        self.canvas.create_text(
+            15,
+            self.canvas.winfo_height() - 27,
+            anchor=tk.NW,
+            text="V: сменить вид",
+            fill="#B8C0CC",
+            font=("Segoe UI", 11),
+        )
 
     def _draw_edge(
         self,
