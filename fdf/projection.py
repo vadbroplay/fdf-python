@@ -7,7 +7,6 @@ from fdf.model import Map, Point
 
 @dataclass(frozen=True)
 class ScreenPoint:
-    """Координаты точки на экране."""
 
     x: float
     y: float
@@ -15,7 +14,6 @@ class ScreenPoint:
 
 @dataclass(frozen=True)
 class Camera:
-    """Параметры проекции и положения камеры."""
 
     scale: float
     offset_x: float
@@ -26,7 +24,6 @@ class Camera:
 
 
     def project(self, point: Point) -> ScreenPoint:
-        """Преобразует координаты карты с учётом поворота вокруг вертикали."""
         angle = math.radians(self.angle_degrees)
 
         rotated_x = (
@@ -67,7 +64,6 @@ class Camera:
         angle_degrees: float = 0.0,
         top_view: bool = False,
     ) -> "Camera":
-        """Подбирает масштаб и положение карты под окно."""
         points = list(height_map)
 
         raw_camera = cls(
