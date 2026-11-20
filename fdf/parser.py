@@ -8,11 +8,6 @@ _COLOR_PATTERN = re.compile(r"0x[0-9a-fA-F]{1,6}\Z")
 
 
 def parse_map(path: str | Path) -> Map:
-    """Читает файл FdF и возвращает карту высот.
-
-    Ошибки формата вызывают MapFormatError.
-    Ошибки доступа к файлу передаются вызывающему коду.
-    """
     file_path = Path(path)
     text = file_path.read_text(encoding="utf-8")
     lines = text.splitlines()
