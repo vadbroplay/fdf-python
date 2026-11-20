@@ -20,15 +20,31 @@ class FdfApp:
         )
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
+        self.z_scale = 1.0
         self._draw_pending = False
 
         self.root.bind("<Escape>", lambda _event: self.root.destroy())
         self.root.bind("<Configure>", self._on_resize)
+        self.root.bind_all("<plus>", self._increase_height)
+        self.root.bind_all("<equal>", self._increase_height)
+        self.root.bind_all("<minus>", self._decrease_height)
+        self.root.bind_all("<KP_Add>", self._increase_height)
+        self.root.bind_all("<KP_Subtract>", self._decrease_height)
 
         self.root.after(100, self.draw)
 
     def run(self) -> None:
         self.root.mainloop()
+
+    def _increase_height(self, _event: tk.Event[tk.Misc]) -> str:
+        self.z_scale = min(round(self.z_scale + 0.1, 1), 5.0)
+        self.draw()
+        return "break"
+
+    def _decrease_height(self, _event: tk.Event[tk.Misc]) -> str:
+        self.z_scale = max(round(self.z_scale - 0.1, 1), 0.0)
+        self.draw()
+        return "break"
 
     def _on_resize(self, event: tk.Event[tk.Misc]) -> None:
         if event.widget is self.root and not self._draw_pending:
@@ -39,6 +55,53 @@ class FdfApp:
         self._draw_pending = False
         self.draw()
 
+
+    def _draw_hud(self) -> None:
+        color = "#B8C0CC"
+        font = ("Segoe UI", 10)
+
+        # Информация о высоте — слева сверху.
+        self.canvas.create_text(
+            16,
+            14,
+            anchor="nw",
+            text=f"Высота рельефа: {self.z_scale:.1f}×",
+            fill=color,
+            font=("Segoe UI", 11, "bold"),
+        )
+
+        # Подсказки — внизу экрана.
+        height = self.canvas.winfo_height()
+        bottom = height - 16
+
+        self.canvas.create_text(
+            16,
+            bottom,
+            anchor="sw",
+            text="+  Увеличить высоту",
+            fill=color,
+            font=font,
+        )
+
+        self.canvas.create_text(
+            165,
+            bottom,
+            anchor="sw",
+            text="−  Уменьшить высоту",
+            fill=color,
+            font=font,
+        )
+
+        self.canvas.create_text(
+            320,
+            bottom,
+            anchor="sw",
+            text="Esc  Закрыть приложение",
+            fill=color,
+            font=font,
+        )
+
+
     def draw(self) -> None:
         self.canvas.delete("all")
 
@@ -48,7 +111,13 @@ class FdfApp:
         if width <= 1 or height <= 1:
             return
 
-        camera = Camera.fit(self.height_map, width, height)
+        base_camera = Camera.fit(self.height_map, width, height)
+        camera = Camera(
+            scale=base_camera.scale,
+            offset_x=base_camera.offset_x,
+            offset_y=base_camera.offset_y,
+            z_scale=self.z_scale,
+        )
 
         for point in self.height_map:
             start = camera.project(point)
@@ -71,6 +140,8 @@ class FdfApp:
                 fill="#E8EDF2",
                 outline="",
             )
+
+        self._draw_hud()
 
     def _draw_edge(
         self,

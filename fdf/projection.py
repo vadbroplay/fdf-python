@@ -16,6 +16,7 @@ class Camera:
     scale: float
     offset_x: float
     offset_y: float
+    z_scale: float = 1.0
 
     def project(self, point: Point) -> ScreenPoint:
         iso_angle = math.radians(30)
@@ -26,7 +27,7 @@ class Camera:
 
         projected_y = (
             (point.x + point.y) * math.sin(iso_angle)
-            - point.z
+            - point.z * self.z_scale
         )
 
         return ScreenPoint(
