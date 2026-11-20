@@ -92,11 +92,11 @@ class FdfApp:
     def _draw_hud(self) -> None:
         self.canvas.create_text(
             15,
-            self.canvas.winfo_height() - 30,
+            self.canvas.winfo_height() - 27,
             anchor=tk.NW,
-            text="V — сменить вид",
+            text="V: сменить вид",
             fill="#B8C0CC",
-            font=("Segoe UI", 10),
+            font=("Segoe UI", 11),
         )
 
     def _draw_edge(
