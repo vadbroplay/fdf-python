@@ -6,7 +6,6 @@ from fdf.parser import parse_map
 
 
 def main() -> int:
-    """Загружает карту и запускает графическое приложение."""
     if len(sys.argv) != 2:
         print(
             "Использование: python main.py <файл.fdf>",
