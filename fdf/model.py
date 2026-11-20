@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Point:
-    """Точка карты высот."""
 
     x: int
     y: int
@@ -13,7 +12,6 @@ class Point:
 
 
 class Map:
-    """Прямоугольная карта высот."""
 
     def __init__(self, rows: list[list[Point]]) -> None:
         if not rows or not rows[0]:
@@ -28,16 +26,13 @@ class Map:
         self.height = len(rows)
 
     def __len__(self) -> int:
-        """Возвращает общее число точек."""
         return self.width * self.height
 
     def __iter__(self) -> Iterator[Point]:
-        """Позволяет перебирать все точки карты."""
         for row in self.rows:
             yield from row
 
     def neighbors(self, point: Point) -> list[Point]:
-        """Возвращает соседей точки по горизонтали и вертикали."""
         result: list[Point] = []
         x, y = point.x, point.y
 
