@@ -8,7 +8,6 @@ from fdf.parser import parse_map
 
 
 def write_map(tmp_path: Path, text: str) -> Path:
-    """Создаёт временный файл карты для теста."""
     path = tmp_path / "test.fdf"
     path.write_text(text, encoding="utf-8")
     return path
