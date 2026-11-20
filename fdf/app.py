@@ -188,6 +188,49 @@ class FdfApp:
                 fill="#E8EDF2",
                 outline="",
             )
+        self._draw_hud()
+
+
+    def _draw_hud(self) -> None:
+        color = "#B8C0CC"
+        font = ("Segoe UI", 10)
+        bottom = self.canvas.winfo_height() - 16
+
+        self.canvas.create_text(
+            16,
+            bottom,
+            anchor="sw",
+            text="Колесо мыши - Масштабирование",
+            fill=color,
+            font=font,
+        )
+
+        self.canvas.create_text(
+            260,
+            bottom,
+            anchor="sw",
+            text="Стрелки - Сдвиг",
+            fill=color,
+            font=font,
+        )
+
+        self.canvas.create_text(
+            390,
+            bottom,
+            anchor="sw",
+            text="ЛКМ + перетаскивание - Перемещение",
+            fill=color,
+            font=font,
+        )
+
+        self.canvas.create_text(
+            680,
+            bottom,
+            anchor="sw",
+            text="Esc - Выход",
+            fill=color,
+            font=font,
+        )
 
     def _draw_edge(
         self,
