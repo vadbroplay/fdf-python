@@ -57,48 +57,13 @@ class FdfApp:
 
 
     def _draw_hud(self) -> None:
-        color = "#B8C0CC"
-        font = ("Segoe UI", 10)
-
-        # Информация о высоте — слева сверху.
         self.canvas.create_text(
             16,
-            14,
-            anchor="nw",
-            text=f"Высота рельефа: {self.z_scale:.1f}×",
-            fill=color,
-            font=("Segoe UI", 11, "bold"),
-        )
-
-        # Подсказки — внизу экрана.
-        height = self.canvas.winfo_height()
-        bottom = height - 16
-
-        self.canvas.create_text(
-            16,
-            bottom,
+            self.canvas.winfo_height() - 16,
             anchor="sw",
-            text="+  Увеличить высоту",
-            fill=color,
-            font=font,
-        )
-
-        self.canvas.create_text(
-            165,
-            bottom,
-            anchor="sw",
-            text="−  Уменьшить высоту",
-            fill=color,
-            font=font,
-        )
-
-        self.canvas.create_text(
-            320,
-            bottom,
-            anchor="sw",
-            text="Esc  Закрыть приложение",
-            fill=color,
-            font=font,
+            text="+: Увеличить высоту | −: Уменьшить высоту | Esc: Закрыть приложение",
+            fill="#B8C0CC",
+            font=("Segoe UI", 11),
         )
 
 
