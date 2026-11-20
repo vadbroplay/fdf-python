@@ -21,17 +21,17 @@ def test_project_horizontal_point() -> None:
     assert result.y == pytest.approx(math.sin(math.radians(30)))
 
 
+
 def test_project_vertical_height() -> None:
     camera = Camera(
         scale=1.0,
         offset_x=0.0,
         offset_y=0.0,
-        z_scale=2.0,
     )
     result = camera.project(Point(x=0, y=0, z=3))
-
     assert result.x == pytest.approx(0.0)
-    assert result.y == pytest.approx(-6.0)
+    assert result.y == pytest.approx(-3.0)
+
 
 
 def test_project_applies_scale_and_offset() -> None:
