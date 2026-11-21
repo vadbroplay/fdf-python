@@ -1,4 +1,9 @@
-# FdF — карта высот
+<h1>
+  FdF — карта высот
+  <a href="https://github.com/vadbroplay/fdf-python/actions/workflows/checks.yml">
+    <img src="https://github.com/vadbroplay/fdf-python/actions/workflows/checks.yml/badge.svg?branch=additional-ci" alt="Python CI">
+  </a>
+</h1>
 
 <p align="center">
   <img src="docs/screenshot1.png" width="700" alt="Приложение FdF">

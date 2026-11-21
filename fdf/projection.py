@@ -17,28 +17,35 @@ class Camera:
     offset_x: float
     offset_y: float
     rotation: float = 0.0
+    z_scale: float = 1.0
+    top_view: bool = False
 
     def project(self, point: Point) -> ScreenPoint:
-        angle = math.radians(30)
-        rotation_angle = math.radians(self.rotation)
+        if self.top_view:
+            projected_x = float(point.x)
+            projected_y = float(point.y)
+        else:
+            rotation_angle = math.radians(self.rotation)
 
-        rotated_x = (
-            point.x * math.cos(rotation_angle)
-            - point.y * math.sin(rotation_angle)
-        )
-        rotated_y = (
-            point.x * math.sin(rotation_angle)
-            + point.y * math.cos(rotation_angle)
-        )
+            rotated_x = (
+                point.x * math.cos(rotation_angle)
+                - point.y * math.sin(rotation_angle)
+            )
+            rotated_y = (
+                point.x * math.sin(rotation_angle)
+                + point.y * math.cos(rotation_angle)
+            )
 
-        projected_x = (
-            rotated_x - rotated_y
-        ) * math.cos(angle)
+            iso_angle = math.radians(30)
 
-        projected_y = (
-            (rotated_x + rotated_y) * math.sin(angle)
-            - point.z
-        )
+            projected_x = (
+                rotated_x - rotated_y
+            ) * math.cos(iso_angle)
+
+            projected_y = (
+                (rotated_x + rotated_y) * math.sin(iso_angle)
+                - point.z * self.z_scale
+            )
 
         return ScreenPoint(
             x=projected_x * self.scale + self.offset_x,
@@ -52,6 +59,8 @@ class Camera:
         width: int,
         height: int,
         rotation: float = 0.0,
+        top_view: bool = False,
+        z_scale: float = 1.0,
     ) -> "Camera":
         points = list(height_map)
 
@@ -60,6 +69,8 @@ class Camera:
             offset_x=0.0,
             offset_y=0.0,
             rotation=rotation,
+            top_view=top_view,
+            z_scale=z_scale,
         )
 
         projected = [
@@ -94,4 +105,6 @@ class Camera:
             offset_x=offset_x,
             offset_y=offset_y,
             rotation=rotation,
+            top_view=top_view,
+            z_scale=z_scale,
         )
