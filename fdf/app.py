@@ -14,6 +14,7 @@ class FdfApp:
         self.root.minsize(500, 400)
 
         self.top_view = False
+        self.z_scale = 1.0
 
         self.canvas = tk.Canvas(
             self.root,
@@ -32,17 +33,34 @@ class FdfApp:
         self.root.bind("<Configure>", self._on_resize)
         self.root.bind("<KeyPress>", self._on_key_press)
 
+        self.root.bind_all("<plus>", self._increase_height)
+        self.root.bind_all("<equal>", self._increase_height)
+        self.root.bind_all("<minus>", self._decrease_height)
+        self.root.bind_all("<KP_Add>", self._increase_height)
+        self.root.bind_all("<KP_Subtract>", self._decrease_height)
+
         self.root.after(100, self.draw)
 
     def _on_key_press(self, event: tk.Event[tk.Misc]) -> None:
         if event.keycode == 86:
             self._toggle_view(event)
+
     def run(self) -> None:
         self.root.mainloop()
 
     def _toggle_view(self, _event: tk.Event[tk.Misc]) -> None:
         self.top_view = not self.top_view
         self.draw()
+
+    def _increase_height(self, _event: tk.Event[tk.Misc]) -> str:
+        self.z_scale = min(round(self.z_scale + 0.1, 1), 5.0)
+        self.draw()
+        return "break"
+
+    def _decrease_height(self, _event: tk.Event[tk.Misc]) -> str:
+        self.z_scale = max(round(self.z_scale - 0.1, 1), 0.0)
+        self.draw()
+        return "break"
 
     def _on_resize(self, event: tk.Event[tk.Misc]) -> None:
         if event.widget is self.root and not self._draw_pending:
@@ -75,6 +93,19 @@ class FdfApp:
 
         return f"#{red:02x}{green:02x}{blue:02x}"
 
+    def _draw_hud(self) -> None:
+        self.canvas.create_text(
+            15,
+            self.canvas.winfo_height() - 12,
+            anchor="sw",
+            text=(
+                "V — вид сверху | +/- — масштаб высоты\n"
+                "Esc — выход"
+            ),
+            fill="#B8C0CC",
+            font=("Segoe UI", 10),
+        )
+
     def draw(self) -> None:
         self.canvas.delete("all")
 
@@ -84,12 +115,15 @@ class FdfApp:
         if width <= 1 or height <= 1:
             return
 
-        camera = Camera.fit(
+        base_camera = Camera.fit(
             self.height_map,
             width,
             height,
             top_view=self.top_view,
+            z_scale=self.z_scale,
         )
+
+        camera = base_camera
 
         for point in self.height_map:
             start = camera.project(point)
@@ -119,7 +153,6 @@ class FdfApp:
                 )
 
             color = self._point_color(point)
-
             self.canvas.create_oval(
                 start.x - 3,
                 start.y - 3,
@@ -130,16 +163,6 @@ class FdfApp:
             )
 
         self._draw_hud()
-
-    def _draw_hud(self) -> None:
-        self.canvas.create_text(
-            15,
-            self.canvas.winfo_height() - 27,
-            anchor=tk.NW,
-            text="V: сменить вид",
-            fill="#B8C0CC",
-            font=("Segoe UI", 11),
-        )
 
     def _draw_edge(
         self,
