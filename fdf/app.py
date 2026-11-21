@@ -13,6 +13,7 @@ class FdfApp:
         self.root.geometry("1000x700")
         self.root.minsize(500, 400)
 
+        self.rotation = 0.0
         self.top_view = False
         self.z_scale = 1.0
 
@@ -42,8 +43,16 @@ class FdfApp:
         self.root.after(100, self.draw)
 
     def _on_key_press(self, event: tk.Event[tk.Misc]) -> None:
-        if event.keycode == 86:
+        if event.keycode == 65:
+            self.rotation -= 10.0
+        elif event.keycode == 68:
+            self.rotation += 10.0
+        elif event.keycode == 86:
             self._toggle_view(event)
+        else:
+            return
+
+        self.draw()
 
     def run(self) -> None:
         self.root.mainloop()
@@ -99,8 +108,8 @@ class FdfApp:
             self.canvas.winfo_height() - 12,
             anchor="sw",
             text=(
-                "V — вид сверху | +/- — масштаб высоты\n"
-                "Esc — выход"
+                "A/D — поворот | V — вид сверху\n"
+                "+/- — масштаб высоты | Esc — выход"
             ),
             fill="#B8C0CC",
             font=("Segoe UI", 10),
@@ -115,15 +124,14 @@ class FdfApp:
         if width <= 1 or height <= 1:
             return
 
-        base_camera = Camera.fit(
+        camera = Camera.fit(
             self.height_map,
             width,
             height,
+            rotation=self.rotation,
             top_view=self.top_view,
             z_scale=self.z_scale,
         )
-
-        camera = base_camera
 
         for point in self.height_map:
             start = camera.project(point)

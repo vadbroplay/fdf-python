@@ -16,6 +16,7 @@ class Camera:
     scale: float
     offset_x: float
     offset_y: float
+    rotation: float = 0.0
     z_scale: float = 1.0
     top_view: bool = False
 
@@ -24,16 +25,27 @@ class Camera:
             projected_x = float(point.x)
             projected_y = float(point.y)
         else:
+            rotation_angle = math.radians(self.rotation)
+
+            rotated_x = (
+                point.x * math.cos(rotation_angle)
+                - point.y * math.sin(rotation_angle)
+            )
+            rotated_y = (
+                point.x * math.sin(rotation_angle)
+                + point.y * math.cos(rotation_angle)
+            )
+
             iso_angle = math.radians(30)
 
             projected_x = (
-                point.x - point.y
+                rotated_x - rotated_y
             ) * math.cos(iso_angle)
 
-        projected_y = (
-            (point.x + point.y) * math.sin(iso_angle)
-            - point.z * self.z_scale
-        )
+            projected_y = (
+                (rotated_x + rotated_y) * math.sin(iso_angle)
+                - point.z * self.z_scale
+            )
 
         return ScreenPoint(
             x=projected_x * self.scale + self.offset_x,
@@ -46,6 +58,7 @@ class Camera:
         height_map: Map,
         width: int,
         height: int,
+        rotation: float = 0.0,
         top_view: bool = False,
         z_scale: float = 1.0,
     ) -> "Camera":
@@ -55,6 +68,7 @@ class Camera:
             scale=1.0,
             offset_x=0.0,
             offset_y=0.0,
+            rotation=rotation,
             top_view=top_view,
             z_scale=z_scale,
         )
@@ -90,6 +104,7 @@ class Camera:
             scale=scale,
             offset_x=offset_x,
             offset_y=offset_y,
+            rotation=rotation,
             top_view=top_view,
             z_scale=z_scale,
         )
