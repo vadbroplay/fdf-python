@@ -47,6 +47,7 @@ class Camera:
         width: int,
         height: int,
         top_view: bool = False,
+        z_scale: float = 1.0,
     ) -> "Camera":
         points = list(height_map)
 
@@ -55,6 +56,7 @@ class Camera:
             offset_x=0.0,
             offset_y=0.0,
             top_view=top_view,
+            z_scale=z_scale,
         )
 
         projected = [
@@ -89,4 +91,5 @@ class Camera:
             offset_x=offset_x,
             offset_y=offset_y,
             top_view=top_view,
+            z_scale=z_scale,
         )
